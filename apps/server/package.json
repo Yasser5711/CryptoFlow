@@ -1,0 +1,37 @@
+{
+  "name": "server",
+  "main": "src/index.ts",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc -b",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@cryptoflow/banner": "workspace:*",
+    "@cryptoflow/logger": "workspace:*",
+    "@fastify/cors": "^11.0.1",
+    "@influxdata/influxdb-client": "^1.35.0",
+    "@scalar/fastify-api-reference": "^1.29.3",
+    "@trpc/client": "^11.5.0",
+    "@trpc/server": "^11.5.0",
+    "dotenv": "^17.2.2",
+    "fastify": "^5.3.3",
+    "kafkajs": "^2.2.4",
+    "superjson": "^2.2.2",
+    "trpc-to-openapi": "^3.0.0",
+    "trpc-ui": "^1.0.15",
+    "zod": "^4.0.2",
+    "zod-openapi": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "trpc-ui": "^1.0.15",
+    "tsdown": "^0.14.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

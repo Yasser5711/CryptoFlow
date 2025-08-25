@@ -1,0 +1,23 @@
+{
+  "name": "backfill-prices",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --enable-source-maps --trace-warnings ./dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "check-types": "tsc -b"
+  },
+  "dependencies": {
+    "@cryptoflow/banner": "workspace:*",
+    "@cryptoflow/logger": "workspace:*",
+    "@influxdata/influxdb-client": "^1.35.0",
+    "dotenv": "^17.2.2",
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

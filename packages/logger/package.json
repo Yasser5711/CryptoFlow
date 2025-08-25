@@ -1,0 +1,36 @@
+{
+  "name": "@cryptoflow/logger",
+  "version": "1.0.0",
+  "description": "Unified logger with Pino and emojis for CryptoFlow applications",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "pino": "^9.5.0",
+    "pino-pretty": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "logger",
+    "pino",
+    "emoji",
+    "logging"
+  ],
+  "author": "CryptoFlow Team",
+  "license": "MIT"
+}

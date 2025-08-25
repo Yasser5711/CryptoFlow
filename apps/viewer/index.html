@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CryptoFlow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+    <text y='.9em' font-size='90'>🌊</text>
+  </svg>" />
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <span class="pair" id="pair">BTC/USD</span>
+        <span class="last" id="lastPrice">$0.00</span>
+        <span class="chg" id="change">—</span>
+        <span class="chip" id="srcInfo">source: —</span>
+        <span class="chip" id="candleInfo">candles: —</span>
+      </div>
+
+      <div class="controls">
+        <label>
+          Coin:
+          <select id="coin">
+            <option value="BTC" selected>BTC</option>
+            <option value="ETH">ETH</option>
+            <option value="SOL">SOL</option>
+          </select>
+        </label>
+
+        <label>
+          Window:
+          <select id="win">
+            <option value="1m" selected>1m</option>
+            <option value="5m">5m</option>
+            <option value="15m">15m</option>
+            <option value="1h">1h</option>
+          </select>
+        </label>
+
+        <label>
+          Range:
+          <select id="range">
+            <option value="-1h">Last 1h</option>
+            <option value="-6h" selected>Last 6h</option>
+            <option value="-24h">Last 24h</option>
+            <option value="-7d">Last 7d</option>
+          </select>
+        </label>
+
+        <label>
+          Currency:
+          <select id="currency">
+            <option value="USD" selected>USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </label>
+
+        <button id="refresh" class="primary">Refresh Candles</button>
+        <button id="toggleSSE" class="success">● Live ON</button>
+        <button id="toggleLogs">Show Logs</button>
+      </div>
+
+      <div id="chart"></div>
+
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-dot online" id="sseStatus"></span>
+          <span id="sseText">SSE: Connecting...</span>
+        </div>
+        <div class="status-item"><span id="tickInfo">Ticks: 0</span></div>
+        <div class="status-item">
+          <span id="candleUpdates">Updates: 0</span>
+        </div>
+        <div class="status-item"><span id="lastUpdate">Last: —</span></div>
+
+        <div class="status-item">
+          <span id="candleCount">Historical: — | Live: —</span>
+        </div>
+      </div>
+
+      <div id="err" class="error"></div>
+
+      <div id="logs" class="logs" style="display: none"></div>
+    </div>
+
+    <script type="module" src="/src/app.ts"></script>
+  </body>
+</html>

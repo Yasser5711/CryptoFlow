@@ -1,0 +1,11 @@
+node_modules
+.turbo
+.alchemy
+.env
+.yarn/install-state.gz
+yarn.lock
+
+# AI IDE config
+.windsurf/
+dist/
+!apps/viewer/.env

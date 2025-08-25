@@ -1,0 +1,13 @@
+.git
+node_modules
+**/node_modules
+**/.turbo
+**/dist
+**/.cache
+**/.DS_Store
+**/*.log
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.env
+**/.env

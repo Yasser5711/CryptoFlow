@@ -1,0 +1,23 @@
+{
+  "name": "analytics-prices",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node --enable-source-maps --trace-warnings ./dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc -b"
+  },
+  "dependencies": {
+    "@cryptoflow/banner": "workspace:*",
+    "@cryptoflow/logger": "workspace:*",
+    "dotenv": "^17.2.2",
+    "fastify": "^5.5.0",
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

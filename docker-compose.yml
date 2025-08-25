@@ -1,0 +1,171 @@
+x-app-env: &app-env
+  KAFKA_BROKERS: kafka:9092
+  INFLUX_URL: http://influxdb:8086
+
+x-app: &app
+  working_dir: /app
+  volumes:
+    - ./:/app
+  env_file:
+    - ./.env
+  environment:
+    <<: *app-env
+
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:7.6.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:7.6.1
+    depends_on:
+      - zookeeper
+
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # Optional, explicit (dev friendly):
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      # Keep heap sane in dev:
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx512m"
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-lc",
+          "kafka-topics --bootstrap-server localhost:9092 --list >/dev/null 2>&1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.7
+    ports: ["8086:8086"]
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: adminadmin
+      DOCKER_INFLUXDB_INIT_ORG: demo-org
+      DOCKER_INFLUXDB_INIT_BUCKET: demo-bucket
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: dev-token
+    volumes:
+      - influx-data:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "curl", "-s", "http://localhost:8086/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  # -------- live ticks -> Kafka: prices.raw.v1
+  # prices-scraper:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/prices-scraper/Dockerfile
+  #   container_name: prices-scraper
+  #   depends_on:
+  #     backfill-prices:
+  #       condition: service_completed_successfully
+  #   ports:
+  #     - "3101:3101" # /readyz /healthz
+
+  # # -------- ticks -> 1m OHLC -> Kafka: metrics.events
+  # analytics-prices:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/analytics-prices/Dockerfile
+  #   container_name: analytics-prices
+  #   depends_on:
+  #     backfill-prices:
+  #       condition: service_completed_successfully
+  #   ports:
+  #     - "3102:3102" # /readyz /healthz
+
+  # # -------- consumes metrics.events -> Influx, exposes API
+  # server:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/server/Dockerfile
+  #   container_name: metrics-server
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #     influxdb:
+  #       condition: service_healthy
+  #     backfill-prices:
+  #       condition: service_completed_successfully
+  # If your .env already sets INFLUX_URL, you can drop this.
+  # Typical values:
+  #  - inside Docker network: http://influxdb:8086
+  #  - talking to host:        http://host.docker.internal:8086
+  # environment:
+  #   <<: *app-env
+  #   INFLUX_URL: ${INFLUX_URL:-http://influxdb:8086}
+  # ports:
+  #   - "3000:3000" # API
+
+  # # -------- one-shot history import (enable via profile)
+  # backfill-prices:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/backfill-prices/Dockerfile
+  #   env_file:
+  #     - ./.env
+  #   environment:
+  #     <<: *app-env
+  #   container_name: backfill-prices
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #     influxdb:
+  #       condition: service_healthy
+  #   restart: "no"
+  #profiles: ["backfill", "default"]
+  # frontend:
+  #   build:
+  #     context: ./apps/frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     REACT_APP_API_URL: http://localhost:8080
+
+  # trading-bot-service:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/trading-bot-service/Dockerfile
+  #   container_name: trading-bot-service
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #     influxdb:
+  #       condition: service_healthy
+  #   ports:
+  #     - "4005:4005"
+  #   environment:
+  #     <<: *app-env
+  #     INFLUX_URL: http://influxdb:8086
+  #     INFLUX_TOKEN: dev-token
+  #     INFLUX_ORG: demo-org
+  # -------- Conduktor Platform
+
+volumes:
+  influx-data:

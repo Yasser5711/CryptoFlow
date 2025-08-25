@@ -1,0 +1,15 @@
+export const env = {
+  KAFKA_BROKERS: process.env.KAFKA_BROKERS!,
+  KAFKA_CLIENT_ID: process.env.KAFKA_CLIENT_ID!,
+  KAFKA_TOPIC: process.env.KAFKA_TOPIC!,
+  KAFKA_GROUP_ID: process.env.KAFKA_GROUP_ID!,
+  INFLUX_URL: process.env.INFLUX_URL!,
+  INFLUX_TOKEN: process.env.INFLUX_TOKEN!,
+  INFLUX_ORG: process.env.INFLUX_ORG!,
+  INFLUX_BUCKET: process.env.INFLUX_BUCKET!,
+  PRICES_TOPIC: process.env.PRICES_TOPIC!,
+  CORS_ORIGIN: process.env.CORS_ORIGIN || "http://localhost:3200",
+  FX_USD_TO_EUR: process.env.FX_USD_TO_EUR || "0.92",
+  INFLUX_FLUSH_MODE: process.env.INFLUX_FLUSH_MODE || "immediate",
+  INFLUX_FLUSH_INTERVAL_MS: process.env.INFLUX_FLUSH_INTERVAL_MS || "2000",
+};
